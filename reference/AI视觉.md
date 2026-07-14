@@ -1,5 +1,6 @@
 # 数据集准备
 [打标签](https://www.makesense.ai/)
+准备数据集时，一些关键信息（模糊、遮挡、分类等）任务需要在这个阶段学习，而非INT8量化时
 # 训练
 服务器训练，先把数据集 scp 传上去
 ```
@@ -41,7 +42,7 @@ name=yolo11n_test
 ```
 scp mdz@remote3.ginpie.com:~/yolo11n_test/runs/detect/train-2/weights/best.pt "D:\yolo11n_test\"
 ```
-
+==其实这段是在微调，将yolo11官方的预训练模型 yolo11n.pt 进行微调==
 # 部署
 ## 图形化界面
 docker name:
@@ -100,6 +101,7 @@ model_transform.py \
 ```
 5. INT8 校准：best.mlir → best_cali_table
    此处 image 不是数据集，而是没有标签的真实场景
+   这里准备的校准集强调的真实场景，而非训练时的理想样本
 ```
 run_calibration.py best.mlir \
   --dataset ./images \
@@ -131,3 +133,5 @@ mean = 0, 0, 0
 scale = 0.00392156862745098, 0.00392156862745098, 0.00392156862745098
 labels = A, B, C, D(和之前 yaml 中的 name 一样)
 ```
+8. 最终需要部署的是 .cvmodel 和 .mud
+# 加速
